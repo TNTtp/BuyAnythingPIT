@@ -1,0 +1,72 @@
+local buyWindow = Instance.new("ScreenGui")
+buyWindow.Name = "BuyWindow"
+
+local mainFrame = Instance.new("Frame")
+mainFrame.Name = "Main"
+mainFrame.Size = UDim2.new(0, 300, 0, 150)
+mainFrame.Position = UDim2.new(0, 0, 1, -150)
+mainFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+mainFrame.BorderSizePixel = 2
+mainFrame.Parent = buyWindow
+
+local label = Instance.new("TextBox")
+label.Name = "Label"
+label.ClearTextOnFocus = true
+label.Size = UDim2.new(1, 0, 0.5, 0)
+label.Position = UDim2.new(0, 0, 0, 0)
+label.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+label.BorderSizePixel = 0
+label.Text = "Type item here"
+label.Font = Enum.Font.SourceSans
+label.TextSize = 16
+label.Parent = mainFrame
+
+local button = Instance.new("TextButton")
+button.Name = "Button"
+button.Size = UDim2.new(1, 0, 0.5, 0)
+button.Position = UDim2.new(0, 0, 0.5, 0)
+button.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+button.BorderSizePixel = 0
+button.Text = "Buy with cash"
+button.Font = Enum.Font.SourceSans
+button.TextSize = 18
+button.Parent = mainFrame
+
+local str
+label.Changed:Connect(function()
+	str = nil
+	if label.Text:find(" ") then
+		local textlist = label.Text:split(" ")
+		
+		for i,v in pairs(textlist) do
+			if str == nil then
+				str = v.upper(string.sub(v, 1, 1)) .. v.lower(string.sub(v, 2, -1))
+			else
+				str = str .. v.upper(string.sub(v, 1, 1)) .. v.lower(string.sub(v, 2, -1))
+			end
+			if i == #textlist then else
+				str = str .. " "
+			end
+		end
+		
+		
+	else
+		str = label.Text.upper(string.sub(label.Text, 1, 1)) .. label.Text.lower(string.sub(label.Text, 2, -1))
+		
+	end
+	
+	
+end)
+
+button.MouseButton1Click:Connect(function()
+    
+    local args = {
+        [1] = str
+    }
+    game:GetService("ReplicatedStorage"):WaitForChild("RemoteEvents"):WaitForChild("BuyItemCash"):FireServer(unpack(args))
+
+    
+end)
+
+
+buyWindow.Parent = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui")
