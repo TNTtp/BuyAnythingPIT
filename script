@@ -23,7 +23,7 @@ label.Parent = mainFrame
 
 local button = Instance.new("TextButton")
 button.Name = "Button"
-button.Size = UDim2.new(1, 0, 0.5, 0)
+button.Size = UDim2.new(0.5, 0, 0.5, 0)
 button.Position = UDim2.new(0, 0, 0.5, 0)
 button.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
 button.BorderSizePixel = 0
@@ -32,12 +32,23 @@ button.Font = Enum.Font.SourceSans
 button.TextSize = 18
 button.Parent = mainFrame
 
+local button2 = Instance.new("TextButton")
+button2.Name = "Button"
+button2.Size = UDim2.new(0.5, 0, 0.5, 0)
+button2.Position = UDim2.new(0.5, 0, 0.5, 0)
+button2.BackgroundColor3 = Color3.fromRGB(255, 255, 0)
+button2.BorderSizePixel = 0
+button2.Text = "Drop item"
+button2.Font = Enum.Font.SourceSans
+button2.TextSize = 18
+button2.Parent = mainFrame
+
 local str
 label.Changed:Connect(function()
 	str = nil
 	if label.Text:find(" ") then
 		local textlist = label.Text:split(" ")
-		
+
 		for i,v in pairs(textlist) do
 			if str == nil then
 				str = v.upper(string.sub(v, 1, 1)) .. v.lower(string.sub(v, 2, -1))
@@ -48,25 +59,32 @@ label.Changed:Connect(function()
 				str = str .. " "
 			end
 		end
-		
-		
+
+
 	else
 		str = label.Text.upper(string.sub(label.Text, 1, 1)) .. label.Text.lower(string.sub(label.Text, 2, -1))
-		
+
 	end
-	
-	
+
+
 end)
 
 button.MouseButton1Click:Connect(function()
-    
-    local args = {
-        [1] = str
-    }
-    game:GetService("ReplicatedStorage"):WaitForChild("RemoteEvents"):WaitForChild("BuyItemCash"):FireServer(unpack(args))
 
-    
+
+    game:GetService("ReplicatedStorage"):WaitForChild("RemoteEvents"):WaitForChild("BuyItemCash"):FireServer(unpack({str}))
+
+
 end)
 
+button2.MouseButton1Click:Connect(function()
+
+
+    game:GetService("ReplicatedStorage"):WaitForChild("RemoteEvents"):WaitForChild("Equip"):FireServer(unpack({str}))
+    wait(0.5)
+    game:GetService("ReplicatedStorage"):WaitForChild("RemoteEvents"):WaitForChild("Drop"):FireServer(unpack({str}))
+
+
+end)
 
 buyWindow.Parent = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui")
